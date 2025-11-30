@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento Full Stack</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-controls">
+            <div class="nav-controls">
+                <button class="btn-nav" onclick="changeDate(-1)">&#8249;</button>
+                <span id="dateDisplay">Carregando...</span>
+                <button class="btn-nav" onclick="changeDate(1)">&#8250;</button>
+                <button onclick="goToToday()" style="font-size: 0.8rem; text-decoration: underline;">Hoje</button>
+            </div>
+            <div class="view-controls">
+                <button onclick="setView('month')" id="btnMonth">Mês</button>
+                <button onclick="setView('week')" id="btnWeek">Semana</button>
+                <button onclick="setView('day')" id="btnDay" class="active">Dia</button>
+            </div>
+        </div>
+
+        <div id="calendarContainer" class="calendar-container">
+        </div>
+
+        <div class="form-panel">
+            <h4>Novo Compromisso</h4>
+            <div class="form-row">
+                <input type="date" id="inputDate">
+                <input type="time" id="inputStart" value="09:00">
+                <input type="time" id="inputEnd" value="10:00">
+            </div>
+            <div class="form-row">
+                <input type="text" id="inputDesc" placeholder="Descrição (ex: Reunião Projeto X)">
+            </div>
+            <button class="btn-primary" onclick="createAppointment()">Agendar</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>

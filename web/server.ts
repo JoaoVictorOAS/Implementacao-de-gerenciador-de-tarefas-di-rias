@@ -1,4 +1,5 @@
 import express from 'express'
+import path from 'path'
 import { AppointmentRepo } from '../repos/AppointmentRepo.js'
 import { AppointmentService } from '../services/AppointmentService.js'
 
@@ -8,16 +9,18 @@ const appointmentRepo = new AppointmentRepo()
 const appointmentService = new AppointmentService(appointmentRepo)
 
 app.use(express.json())
+app.use(express.static(path.join(__dirname, '../../public')));
 
 app.post('/compromissos', async (req, res) => {
-  const { data, hora_inicio, hora_fim, descricao } = req.body
-
-  if (!data || !hora_inicio || !hora_fim || !descricao) {
+  const { data, hora_inicio, hora_fim, description } = req.body
+  console.log(req.body)
+  if (!data || !hora_inicio || !hora_fim || !description) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios: data, hora_inicio, hora_fim, descricao' });
   }
 
   try {
-    // Format: "dd/mm/yyyy" -> "yyyy-mm-dd"
+
+    // NAO TENTE MEXER AQUI NOVAMENTE! "dd/mm/yyyy" -> "yyyy-mm-dd"
     const [day, month, year] = data.split('/');
     const isoDate = `${year}-${month}-${day}`;
 
@@ -30,7 +33,7 @@ app.post('/compromissos', async (req, res) => {
       return res.status(400).json({ error: 'Formato de data ou hora inválido. Use dd/mm/aaaa e hh:mm.' });
     }
 
-    const appointment = await appointmentService.addAppointment(descricao, start_time, end_time)
+    const appointment = await appointmentService.addAppointment(description, start_time, end_time)
     res.status(201).json(appointment)
   } catch (error: any) {
     res.status(400).json({ error: error?.message })
