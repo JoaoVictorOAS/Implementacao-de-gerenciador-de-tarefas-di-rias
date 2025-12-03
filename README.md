@@ -87,7 +87,7 @@ curl http://localhost:3000/compromissos
 
 curl -X POST http://localhost:3000/compromissos -H "Content-Type: application/json" -d "{\"data\": \"10/01/2026\", \"hora_inicio\": \"14:00\", \"hora_fim\": \"15:30\", \"description\": \"Reunião de planejamento semanal\"}"
 
-
+```
 **b) Interface de Linha de Comando (CLI)**
 
 Execute o comando `tsx` seguido do caminho do arquivo CLI e dos subcomandos desejados.
