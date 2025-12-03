@@ -81,6 +81,13 @@ npx tsx web/server.ts
 
 Após iniciar, você pode acessar a interface web em `http://localhost:3000` ou usar as rotas da API.
 
+ ```bash
+# Exemlpos caso deseje acessar os enpoints pelo bash
+curl http://localhost:3000/compromissos
+
+curl -X POST http://localhost:3000/compromissos -H "Content-Type: application/json" -d "{\"data\": \"10/01/2026\", \"hora_inicio\": \"14:00\", \"hora_fim\": \"15:30\", \"description\": \"Reunião de planejamento semanal\"}"
+
+
 **b) Interface de Linha de Comando (CLI)**
 
 Execute o comando `tsx` seguido do caminho do arquivo CLI e dos subcomandos desejados.
