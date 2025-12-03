@@ -10,6 +10,12 @@ Este projeto é um exemplo de um sistema de agendamento de compromissos constru�
 - **PostgreSQL:** Banco de dados relacional.
 - **Express.js:** Framework para a criação da API REST.
 - **Commander.js:** Framework para a construção da interface de linha de comando.
+- **GoogleCloud** Projeto está hospedado em uma VM dos serviços da google
+
+## Acesso página web 
+
+
+
 
 ## Arquitetura em Camadas (N-Tier)
 
@@ -57,7 +63,8 @@ npm install
 Para criar as tabelas no banco de dados, execute a migração do Prisma:
 
 ```bash
-npx prisma migrate dev
+npx prisma migrate dev --name init
+npx prisma generate
 ```
 
 ### 5. Executar a Aplicação
