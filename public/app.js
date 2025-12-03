@@ -1,17 +1,15 @@
-// --- ESTADO DA APLICAÇÃO ---
-let currentView = 'day'; // 'day', 'week', 'month'
+
+let currentView = 'month';
 let currentDate = new Date();
 let appointments = [];
 
 const API_URL = '/compromissos';
 
-// Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     loadAppointments();
     document.getElementById('inputDate').valueAsDate = new Date();
 });
 
-// --- LÓGICA DE DADOS ---
 
 async function loadAppointments() {
     try {
@@ -32,7 +30,6 @@ async function createAppointment() {
 
     if (!dateStr || !start || !end || !desc) return alert("Preencha tudo!");
 
-    // Formata data para dd/mm/yyyy (formato esperado pelo seu backend split)
     const [y, m, d] = dateStr.split('-');
 
     try {
@@ -48,7 +45,7 @@ async function createAppointment() {
         });
 
         if (res.ok) {
-            await loadAppointments(); // Recarrega dados
+            await loadAppointments(); 
             alert("Agendado!");
         } else {
             const err = await res.json();
@@ -57,11 +54,10 @@ async function createAppointment() {
     } catch (e) { console.error(e); }
 }
 
-// --- LÓGICA DE NAVEGAÇÃO ---
 
 function setView(view) {
     currentView = view;
-    // Atualiza botões
+
     document.querySelectorAll('.view-controls button').forEach(b => b.classList.remove('active'));
     document.getElementById('btn' + view.charAt(0).toUpperCase() + view.slice(1)).classList.add('active');
     renderCalendar();
@@ -83,13 +79,12 @@ function goToToday() {
     renderCalendar();
 }
 
-// --- RENDERIZAÇÃO PRINCIPAL ---
 
 function renderCalendar() {
     const container = document.getElementById('calendarContainer');
     container.innerHTML = '';
 
-    // Remove classes antigas
+
     container.className = 'calendar-container';
 
     if (currentView === 'day') renderDayView(container);
@@ -97,18 +92,17 @@ function renderCalendar() {
     else if (currentView === 'month') renderMonthView(container);
 }
 
-// 1. VIEW MENSAL
+
 function renderMonthView(container) {
     container.classList.add('view-month');
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
-    // Título
+    
     document.getElementById('dateDisplay').innerText =
         new Date(year, month).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
-    // Cabeçalho Dias da Semana
     const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
     days.forEach(d => {
         const el = document.createElement('div');
@@ -117,16 +111,13 @@ function renderMonthView(container) {
         container.appendChild(el);
     });
 
-    // Lógica do Calendário
     const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0-6
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    // Células vazias antes do dia 1
     for (let i = 0; i < firstDayOfMonth; i++) {
         container.appendChild(document.createElement('div'));
     }
 
-    // Dias do mês
     for (let day = 1; day <= daysInMonth; day++) {
         const cellDate = new Date(year, month, day);
         const cellString = cellDate.toISOString().split('T')[0];
@@ -135,13 +126,10 @@ function renderMonthView(container) {
         cell.className = 'month-cell';
         if (cellString === new Date().toISOString().split('T')[0]) cell.classList.add('today');
 
-        // Ao clicar no dia, vai para a visão diária daquele dia
         cell.onclick = () => { currentDate = cellDate; setView('day'); };
 
-        // Número do dia
         cell.innerHTML = `<span class="day-number">${day}</span>`;
 
-        // Filtrar eventos deste dia
         const daysEvents = appointments.filter(app => {
             if (!app.start_time) return false;
             return app.start_time.startsWith(cellString);
@@ -158,11 +146,9 @@ function renderMonthView(container) {
     }
 }
 
-// 2. VIEW SEMANAL
 function renderWeekView(container) {
     container.classList.add('view-week');
 
-    // Calcular início da semana (Domingo)
     const startOfWeek = new Date(currentDate);
     startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
 
@@ -172,10 +158,8 @@ function renderWeekView(container) {
     document.getElementById('dateDisplay').innerText =
         `${startOfWeek.toLocaleDateString('pt-BR')} - ${endOfWeek.toLocaleDateString('pt-BR')}`;
 
-    // Célula vazia canto superior esquerdo
     container.appendChild(document.createElement('div'));
 
-    // Cabeçalhos (Dom...Sáb)
     const currentWeekDays = [];
     for (let i = 0; i < 7; i++) {
         const d = new Date(startOfWeek);
@@ -188,32 +172,25 @@ function renderWeekView(container) {
         container.appendChild(header);
     }
 
-    // Linhas de Horário (08h as 18h)
-    for (let hour = 8; hour < 19; hour++) {
-        // Coluna da hora
+    for (let hour = 8; hour < 21; hour++) {
         const timeLabel = document.createElement('div');
         timeLabel.className = 'time-label';
         timeLabel.innerText = `${hour}:00`;
         container.appendChild(timeLabel);
 
-        // Colunas dos dias para esta hora
         for (let i = 0; i < 7; i++) {
             const cell = document.createElement('div');
             cell.className = 'week-grid-cell';
 
             const dayIso = currentWeekDays[i].toISOString().split('T')[0];
 
-            // Encontrar eventos
             appointments.forEach(app => {
                 if (!app.start_time) return;
                 const appDate = new Date(app.start_time);
-                // Backend força UTC, frontend visualiza hora local (ajuste conforme necessidade)
-                // Aqui simplificamos comparando a string ISO do dia e a hora UTC retornada
                 if (app.start_time.startsWith(dayIso) && appDate.getUTCHours() === hour) {
                     const div = document.createElement('div');
                     div.className = 'event-card';
                     div.innerText = app.description;
-                    // Ajuste visual de altura/top se tiver minutos
                     cell.appendChild(div);
                 }
             });
@@ -223,7 +200,6 @@ function renderWeekView(container) {
     }
 }
 
-// 3. VIEW DIÁRIA (Adaptada da anterior)
 function renderDayView(container) {
     container.classList.add('view-day');
 
@@ -244,7 +220,6 @@ function renderDayView(container) {
         appointments.forEach(app => {
             if (!app.start_time) return;
 
-            // Verifica dia e hora
             const appDate = new Date(app.start_time);
             if (app.start_time.startsWith(dayIso) && appDate.getUTCHours() === hour) {
                 const div = document.createElement('div');
