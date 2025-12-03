@@ -47,7 +47,7 @@ O projeto é estruturado em camadas para separar as responsabilidades e facilita
 Crie um arquivo `.env` na raiz do projeto com a sua connection string do PostgreSQL. O Prisma a utilizará para se conectar ao banco.
 
 ```env
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
 ```
 
 ### 3. Instalação das Dependências
